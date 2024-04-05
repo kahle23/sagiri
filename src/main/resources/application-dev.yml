@@ -1,0 +1,38 @@
+server:
+  servlet:
+    session:
+      timeout: 30M
+  tomcat:
+    uri-encoding: utf-8
+    threads:
+      min-spare: 5
+      max: 300
+
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/sagiri?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: root
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
+#  redis:
+#    host: 127.0.0.1
+#    port: 6379
+#    password: 123456
+
+logging:
+  config: classpath:logback-spring.xml
+  home: /tmp/logs/
+  level:
+    root: info
+#    org.springframework.boot: off
+
+
+
+
