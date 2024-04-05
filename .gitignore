@@ -1,0 +1,47 @@
+
+
+### VS Code ###
+.vscode/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+/*/.idea
+/*/*.iml
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+/*/.classpath
+/*/.project
+/*/.settings
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+### Other ###
+mvnw
+mvnw.cmd
+*.log
+/.mvn/
+/target/
+/*/mvnw
+/*/mvnw.cmd
+/*/*.log
+/*/.mvn/
+/*/target/
+
+
+
