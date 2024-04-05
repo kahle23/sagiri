@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <th:block th:include="admin/include::header_content('编辑文章')"></th:block>
+    <th:block th:include="admin/include::header_editor"></th:block>
+</head>
+
+<body class="fixed-left">
+<div id="wrapper">
+    <div class="topbar" th:include="admin/include::topbar"></div>
+    <div class="left side-menu" th:include="admin/include::left_side_menu"></div>
+    <div class="content-page">
+        <div class="content">
+            <div class="container">
+
+#include('../header.html',{active: 'articles', title:'编辑文章'})
+#include('./_header.html')
+<div id="app" class="row" v-cloak>
+    <loading :active.sync="isLoading" :can-cancel="true"></loading>
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">编辑文章</h3>
+            </div>
+            <div class="panel-body">
+                <input type="hidden" id="attach_url" value="${attachURL()}" />
+
+                <form id="articleForm">
+                    <input type="hidden" v-model="article.cid"/>
+                    <input type="hidden" v-model="article.status"/>
+                    <input type="hidden" v-model="article.allowComment" />
+                    <input type="hidden" v-model="article.allowPing" />
+                    <input type="hidden" v-model="article.allowFeed" />
+                    <input type="hidden" v-model="article.format"/>
+
+                    <div class="form-group col-md-6">
+                        <input class="form-control" placeholder="请输入文章标题（必须）" v-model="article.title" required/>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <input class="form-control" placeholder="自定义访问路径，如：my-first-article  默认为文章id" v-model="article.slug"/>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <select v-model="article.type" class="form-control">
+                            <option value="" selected>文章类型</option>
+                            <option value="0">默认文章</option>
+                            <option value="1">我的文章</option>
+                            <option value="2">笔记文章</option>
+                            <option value="6">网络文章</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <v-select multiple v-model="category.selected" :options="category.all"></v-select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <select v-model="article.authorId" class="form-control" required>
+                            <option value="" selected>文章作者（必须）</option>
+                            <option value="1">默认</option>
+                            <option value="2">爬虫</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <input id="tags" type="text" class="form-control" placeholder="请填写文章标签"/>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    <div class="form-group col-xs-12">
+                        <div class="pull-right">
+                            <a class="btn btn-purple btn-sm waves-effect waves-light switch-editor" @click="switchEditor">
+                                切换为富文本编辑器
+                            </a>
+                        </div>
+                    </div>
+
+                    <div id="md-container" v-show="article.format == 'markdown'" class="form-group col-md-12">
+                        <textarea id="md-editor"></textarea>
+                    </div>
+                    <div id="html-container" v-show="article.format == 'html'" class="form-group col-md-12">
+                        <div class="summernote"></div>
+                    </div>
+
+                    <div class="form-group col-md-3 col-sm-4">
+                        <label class="col-sm-4">开启评论</label>
+                        <div class="col-sm-8">
+                            <div id="allowComment" class="toggle toggle-success"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-3 col-sm-4">
+                        <label class="col-sm-4">允许Ping</label>
+                        <div class="col-sm-8">
+                            <div id="allowPing" class="toggle toggle-success"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-3 col-sm-4">
+                        <label class="col-sm-4">允许订阅</label>
+                        <div class="col-sm-8">
+                            <div id="allowFeed" class="toggle toggle-success"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label class="col-sm-5">添加缩略图</label>
+                        <div class="col-sm-7">
+                            <div id="addThumb" class="toggle toggle-success"></div>
+                        </div>
+                    </div>
+
+                    <div id="dropzone-container" class="form-group col-md-12 hide">
+                        <div class="dropzone dropzone-previews" id="dropzone">
+                            <div class="dz-message">
+                                <p>可以为你的文章添加一张缩略图 ;)</p>
+                            </div>
+                        </div>
+                        <input type="hidden" name="thumbImg" id="thumbImg"/>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    <div class="form-group col-md-6">
+                        <div class="text-left">
+                            <label class="col-sm-2 control-label" style="line-height: 30px;">发布时间</label>
+                            <div class="col-sm-9 input-append date form_datetime">
+                                <input v-model="article.releaseTime" style="width: 200px;" size="16" type="text" readonly class="form-control" id="form_datetime">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <div class="text-right">
+                            <a class="btn btn-default waves-effect waves-light" href="/admin/articles">返回列表</a>
+                            <button type="button" class="btn btn-primary waves-effect waves-light" @click="publish(1)">
+                                发布文章
+                            </button>
+                            <button type="button" class="btn btn-warning waves-effect waves-light" @click="publish(0)">
+                                存为草稿
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+#include('./_footer.html')
+
+                <footer class="footer text-right" th:include="admin/include::footer"></footer>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="admin/include::footer_with_editor_js"></div>
+
+<script th:src="@{'/admin/js/article-edit.js?v={version}'(version=${app.version})}" ></script>
+</body>
+</html>

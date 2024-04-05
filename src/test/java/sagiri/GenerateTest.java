@@ -1,9 +1,9 @@
 package sagiri;
 
-import artoria.generator.JavaCodeGenerator;
+import artoria.engine.template.VelocityTemplateEngine;
+import artoria.generator.JavaCodeGenerator1;
 import artoria.jdbc.DatabaseClient;
 import artoria.jdbc.SimpleDataSource;
-import artoria.template.VelocityRenderer;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -13,15 +13,15 @@ public class GenerateTest {
 
     @Test
     public void generate() {
-        JavaCodeGenerator generator = new JavaCodeGenerator().newCreator()
+        JavaCodeGenerator1 generator = new JavaCodeGenerator1().newCreator()
                 .setDatabaseClient(databaseClient)
                 .setBaseTemplatePath("classpath:templates/generator/java/custom1")
                 .setBaseOutputPath("src\\main\\java")
-                .setBasePackageName("sagiri.core")
-                .setRenderer(new VelocityRenderer())
+                .setBasePackageName("sagiri.system")
+                .setTemplateEngine(new VelocityTemplateEngine())
                 .addRemovedTableNamePrefixes("t_")
 //                .addExcludedTables("t_user_bak")
-                .addReservedTables("t_article")
+                .addReservedTables("t_system_user")
                 ;
         generator.addAttribute("author", "Kahle");
         generator.generate();

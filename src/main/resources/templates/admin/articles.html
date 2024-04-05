@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <th:block th:include="admin/include::header_content('文章管理')"></th:block>
+</head>
+
+<body class="fixed-left">
+<div id="wrapper">
+    <div class="topbar" th:include="admin/include::topbar"></div>
+    <div class="left side-menu" th:include="admin/include::left_side_menu"></div>
+    <div class="content-page">
+        <div class="content">
+            <div class="container">
+
+#include('./header.html',{active:'articles', title:'文章管理'})
+<div id="app" class="row" v-cloak>
+    <loading :active.sync="isLoading" :can-cancel="true"></loading>
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">文章管理</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="row p-b-10 m-l-10">
+                            <form class="form-inline" role="form">
+                                <div class="form-group">
+                                    <input v-model="search.title" type="text" class="form-control" placeholder="文章标题">
+                                </div>
+
+                                <select v-model="search.category" class="form-control">
+                                    <option value="" selected>所属分类</option>
+                                    <option v-for="item in categories" :value="item.id">
+                                        {{ item.name }}
+                                    </option>
+                                </select>
+
+                                <select v-model="search.status" class="form-control">
+                                    <option value="" selected>发布状态</option>
+                                    <option value="0">草稿</option>
+                                    <option value="1">已发布</option>
+                                </select>
+
+                                <select v-model="search.type" class="form-control">
+                                    <option value="" selected>文章类型</option>
+                                    <option value="0">默认文章</option>
+                                    <option value="1">我的文章</option>
+                                    <option value="2">笔记文章</option>
+                                    <option value="6">网络文章</option>
+                                </select>
+
+                                <button type="button" class="btn btn-success waves-effect waves-light m-l-10"
+                                        @click="load(1)">查询
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>文章ID</th>
+                                    <th width="20%">文章标题</th>
+                                    <th>文章类型</th>
+                                    <th>文章分类</th>
+                                    <th>作者名称</th>
+                                    <th>文章来源</th>
+                                    <th>状态</th>
+                                    <th width="15%">发布时间</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in articlePage.data">
+                                    <td>
+                                        <a :href="'/admin/article/edit/' + item.id">{{ item.id }}</a>
+                                    </td>
+                                    <td>
+                                        <a :href="'/admin/article/edit/' + item.id">{{ item.title }}</a>
+                                    </td>
+                                    <td>{{ item.type }}</td>
+                                    <td>{{ item.categoryId }}</td>
+                                    <td>{{ item.authorId }}</td>
+                                    <td>{{ item.origin }}</td>
+                                    <td>
+                                        <span v-show="item.status == '0'" class="label label-default">草稿</span>
+                                        <span v-show="item.status == '1'" class="label label-success">已发布</span>
+                                    </td>
+                                    <td>{{ item.releaseTime | formatTimestamp }}</td>
+                                    <td>
+                                        <a :href="'/admin/article/edit/?id=' + item.id"
+                                           class="btn btn-primary btn-sm waves-effect waves-light m-b-5">
+                                            <i class="fa fa-edit"></i> <span>编辑</span>
+                                        </a>
+                                        <a @click="deleteArticle(item.id, articlePage.pageNum, articlePage.pageNum == articlePage.pageCount && articlePage.total % articlePage.pageSize == 1)" href="javascript:void(0)"
+                                           class="btn btn-danger btn-sm waves-effect waves-light m-b-5">
+                                            <i class="fa fa-trash-o"></i> <span>删除</span>
+                                        </a>
+                                        <a v-show="item.status == 1"
+                                           class="btn btn-warning btn-sm waves-effect waves-light m-b-5"
+                                           :href="'${site_url()}' + item.url"
+                                           target="_blank">
+                                            <i class="fa fa-rocket"></i> <span>预览</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <ul class="pagination m-b-5 pull-right">
+                            <li v-if="articlePage.pageNum > 1">
+                                <a @click="load(articlePage.pageNum - 1)" aria-label="Previous">
+                                    <i class="fa fa-angle-left"></i>&nbsp;上一页
+                                </a>
+                            </li>
+
+                            <li class="page-item" v-for="num in articlePage.pageCount"
+                                :class="{ active: articlePage.pageNum == num }">
+                                <a @click="load(num)">
+                                    {{ num }}</i>
+                                </a>
+                            </li>
+                            <li v-if="articlePage.pageNum < articlePage.pageCount">
+                                <a type="button" class="page-link" @click="load(articlePage.pageNum + 1)">
+                                    下一页&nbsp;<i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li><span>共 {{articlePage.pageCount}} 页</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+#include('./footer.html')
+
+                <footer class="footer text-right" th:include="admin/include::footer"></footer>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="admin/include::footer_js"></div>
+
+<script >
+    var tale = new $.tale();
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            articlePage: {},
+            isLoading: true,
+            search: {
+                title:'',
+                type: '',
+                category: '',
+                status: '',
+                pageNum: 1,
+            },
+            categories:[]
+        },
+        beforeCreate: function () {
+            vueLoding = this.$loading.show();
+        },
+        mounted: function () {
+            this.loadOnce();
+            this.load(1);
+        },
+        methods: {
+            loadOnce: function(){
+                var $vm = this;
+                tale.post({
+                    url: '/api/admin/article/category/select-list',
+                    data: {},
+                    success: function (data) {
+                        $vm.categories = data.data
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert(result.msg || '数据加载失败');
+                    }
+                });
+            },
+            load: function (pageNum) {
+                var $vm = this;
+                $vm.search.pageNum = pageNum;
+                tale.post({
+                    url : '/api/admin/article/paging-list',
+                    data: $vm.search,
+                    success: function (result) {
+                        if(result && result.success){
+                            $vm.articlePage = result;
+                        }
+                        else {
+                            tale.alertError(result.message || '查询失败');
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert(error || '数据加载失败');
+                    }
+                });
+            },
+            deleteArticle: function (articleId, pageNum, previous) {
+                var $vm = this;
+                tale.alertConfirm({
+                    title: '确定删除该文章吗?',
+                    then: function () {
+                        tale.post({
+                            url: '/api/admin/article/delete',
+                            data: {
+                                id: articleId
+                            },
+                            success: function (result) {
+                                if (result && result.success) {
+                                    tale.alertOk('文章删除成功');
+                                    $vm.load(previous ? pageNum > 1 ? pageNum - 1 : 1 : pageNum);
+                                }
+                                else {
+                                    tale.alertError(result.msg || '文章删除失败');
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        vm.isLoading = false;
+        vueLoding.hide();
+    });
+</script>
+
+</body>
+</html>
