@@ -1,5 +1,13 @@
 server:
   port: 1210
+  servlet:
+    session:
+      timeout: 30M
+  tomcat:
+    uri-encoding: utf-8
+    threads:
+      min-spare: 5
+      max: 300
 
 spring:
   application:
@@ -8,14 +16,25 @@ spring:
     active: dev
 #  main:
 #    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
 
----
-spring:
-  profiles: dev
 
----
-spring:
-  profiles: test
+# Mybatis-Plus 相关配置
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+
+
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    root: info
+#    org.springframework.boot: off
 
 
 

@@ -1,15 +1,17 @@
 package sagiri;
 
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * The startup class.
- * @author Kahle
+ * @author Sagiri
  */
 @Slf4j
 @SpringBootApplication
+@MapperScan(basePackages = {"sagiri.*.mapper"})
 public class SagiriApplication {
 
     /**
