@@ -101,7 +101,7 @@
         <dependency>
             <groupId>io.github.kahle23</groupId>
             <artifactId>kunlun-plus</artifactId>
-            <version>1.0.0.20240401.beta</version>
+            <version>1.0.0.20240427.beta</version>
         </dependency>
 
         <dependency>

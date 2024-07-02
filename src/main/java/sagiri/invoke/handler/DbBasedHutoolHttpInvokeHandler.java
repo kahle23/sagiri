@@ -31,7 +31,6 @@ import static kunlun.data.json.JsonFormat.PRETTY_FORMAT;
 @Component
 public class DbBasedHutoolHttpInvokeHandler extends AbstractScriptBasedHutoolHttpInvokeHandler
         implements AutoActionHandler {
-    private final HandlerConfigImpl handlerConfig = new HandlerConfigImpl();
 
     @Resource
     private InvokeHttpService invokeHttpService;
@@ -42,12 +41,6 @@ public class DbBasedHutoolHttpInvokeHandler extends AbstractScriptBasedHutoolHtt
     public String getName() {
 
         return "invoke-http-db";
-    }
-
-    @Override
-    public HandlerConfig getConfig() {
-
-        return handlerConfig;
     }
 
     @Override

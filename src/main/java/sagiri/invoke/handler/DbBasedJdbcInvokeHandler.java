@@ -29,7 +29,6 @@ import static kunlun.data.json.JsonFormat.PRETTY_FORMAT;
 @Component
 public class DbBasedJdbcInvokeHandler extends AbstractScriptBasedJdbcTemplateInvokeHandler
         implements AutoActionHandler {
-    private final HandlerConfigImpl handlerConfig = new HandlerConfigImpl();
 
     @Resource
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -42,12 +41,6 @@ public class DbBasedJdbcInvokeHandler extends AbstractScriptBasedJdbcTemplateInv
     public String getName() {
 
         return "invoke-jdbc-db";
-    }
-
-    @Override
-    public HandlerConfig getConfig() {
-
-        return handlerConfig;
     }
 
     @Override

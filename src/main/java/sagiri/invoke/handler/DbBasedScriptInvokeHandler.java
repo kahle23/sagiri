@@ -37,7 +37,6 @@ import static kunlun.data.json.JsonFormat.PRETTY_FORMAT;
 @Component
 public class DbBasedScriptInvokeHandler extends AbstractScriptBasedScriptInvokeHandler
         implements AutoActionHandler {
-    private final HandlerConfigImpl handlerConfig = new HandlerConfigImpl();
 
     @Resource
     private InvokeScriptService invokeScriptService;
@@ -48,12 +47,6 @@ public class DbBasedScriptInvokeHandler extends AbstractScriptBasedScriptInvokeH
     public String getName() {
 
         return "invoke-script-db";
-    }
-
-    @Override
-    public HandlerConfig getConfig() {
-
-        return handlerConfig;
     }
 
     @Override
