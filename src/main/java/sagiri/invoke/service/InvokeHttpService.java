@@ -1,7 +1,7 @@
 package sagiri.invoke.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import kunlun.action.support.http.HttpInvokeConfig;
+import kunlun.action.invoke.http.HttpInvokeConfig;
 import sagiri.invoke.pojo.entity.InvokeHttp;
 
 /**

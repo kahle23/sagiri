@@ -1,7 +1,7 @@
 package sagiri.invoke.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import kunlun.action.support.script.ScriptInvokeConfig;
+import kunlun.action.invoke.script.ScriptInvokeConfig;
 import sagiri.invoke.pojo.entity.InvokeScript;
 
 /**

@@ -35,7 +35,7 @@ public class InvokeScriptController {
         String invokeName = data.getString(invokeAttrName);
         VerifyUtils.notBlank(invokeName, "调用名称不能为空！");
         data.remove(invokeAttrName);
-        return Result.success(ActionUtils.execute(actionName, data, invokeName, Object.class));
+        return Result.success(ActionUtils.execute(actionName+"."+invokeName, data));
     }
 
 }

@@ -2,18 +2,18 @@ package sagiri.invoke.handler;
 
 import cn.hutool.core.util.StrUtil;
 import com.xxl.job.core.log.XxlJobLogger;
-import kunlun.action.support.AbstractInvokeActionHandler;
-import kunlun.action.support.AutoActionHandler;
-import kunlun.action.support.script.AbstractScriptBasedScriptInvokeHandler;
-import kunlun.action.support.script.ScriptInvokeConfig;
+import kunlun.action.invoke.AbstractInvokeAction;
+import kunlun.action.invoke.script.AbstractScriptBasedScriptInvokeAction;
+import kunlun.action.invoke.script.ScriptInvokeConfig;
+import kunlun.action.support.AutoAction;
 import kunlun.cache.CacheUtils;
 import kunlun.data.Dict;
 import kunlun.data.bean.BeanUtils;
 import kunlun.data.json.JsonUtils;
-import kunlun.exception.BusinessException;
 import kunlun.exception.ExceptionUtils;
 import kunlun.exception.util.VerifyUtils;
 import kunlun.util.Assert;
+import kunlun.util.handler.ScriptHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -35,13 +35,15 @@ import static kunlun.data.json.JsonFormat.PRETTY_FORMAT;
  */
 @Slf4j
 @Component
-public class DbBasedScriptInvokeHandler extends AbstractScriptBasedScriptInvokeHandler
-        implements AutoActionHandler {
+public class DbBasedScriptInvokeHandler extends AbstractScriptBasedScriptInvokeAction
+        implements AutoAction {
 
     @Resource
     private InvokeScriptService invokeScriptService;
     @Resource
     private InvokeLogService invokeLogService;
+    @Resource
+    private ScriptHandler scriptHandler;
 
     @Override
     public String getName() {
@@ -50,9 +52,14 @@ public class DbBasedScriptInvokeHandler extends AbstractScriptBasedScriptInvokeH
     }
 
     @Override
-    protected InvokeContext buildContext(Object input, String name, Class<?> clazz) {
+    protected ScriptHandler getScriptHandler() {
+
+        return scriptHandler;
+    }
+
+    @Override
+    protected InvokeContext buildContext(String name, Object input) {
         Assert.notBlank(name, "Parameter \"name\" must not blank. ");
-        Assert.notNull(clazz, "Parameter \"clazz\" must not null. ");
         // 判断是否在 XxlJob 中
         boolean inXxlJob = false;
         if (input != null) {
@@ -66,7 +73,7 @@ public class DbBasedScriptInvokeHandler extends AbstractScriptBasedScriptInvokeH
             }
         }
         // 构造上下文对象
-        InvokeContextImpl context = new InvokeContextImpl(input, name, clazz);
+        InvokeContextImpl context = new InvokeContextImpl(input, name);
         context.setLog(new SimpleLog(log, inXxlJob));
         return context;
     }
@@ -80,13 +87,6 @@ public class DbBasedScriptInvokeHandler extends AbstractScriptBasedScriptInvokeH
     }
 
     @Override
-    protected void throwException(boolean validate, String message) {
-        if (!validate) {
-            throw new BusinessException(message);
-        }
-    }
-
-    @Override
     protected void doInvoke(InvokeContext context) {
         ScriptInvokeConfig config = (ScriptInvokeConfig) context.getConfig();
         // 获取缓存配置
@@ -94,8 +94,8 @@ public class DbBasedScriptInvokeHandler extends AbstractScriptBasedScriptInvokeH
         String cacheName = cacheConfig.getString("cacheName");
         String cacheKey = cacheConfig.getString("cacheKey");
         // 处理缓存Key
-        cacheKey = StrUtil.isNotBlank(cacheKey)
-                ? (String) eval(config.getEngine(), cacheKey, context) : null;
+        cacheKey = StrUtil.isNotBlank(cacheKey)? (String)
+                getScriptHandler().eval(config.getEngine(), cacheKey, context) : null;
         // 缓存名称 和 缓存Key 不为空，尝试走缓存
         if (StrUtil.isNotBlank(cacheName) && StrUtil.isNotBlank(cacheKey)) {
             Object rawOutput = CacheUtils.get(cacheName, cacheKey, () -> {
@@ -115,7 +115,6 @@ public class DbBasedScriptInvokeHandler extends AbstractScriptBasedScriptInvokeH
             form.setType(THREE);
             form.setInvokeName(context.getInvokeName());
             form.setTime(new Date());
-            form.setExpectedClass(context.getExpectedClass().getName());
             form.setRawInput(JsonUtils.toJsonString(context.getRawInput(), PRETTY_FORMAT));
             form.setConfig(JsonUtils.toJsonString(context.getConfig(), PRETTY_FORMAT));
             form.setRawOutput(JsonUtils.toJsonString(context.getRawOutput(), PRETTY_FORMAT));
@@ -135,11 +134,10 @@ public class DbBasedScriptInvokeHandler extends AbstractScriptBasedScriptInvokeH
      * 让上下文对象含有 slf4j 的日志对象（也许是被包装之后的对象），方便在 脚本中 打印日志.
      * @author Sagiri
      */
-    public static class InvokeContextImpl extends AbstractInvokeActionHandler.InvokeContextImpl {
+    public static class InvokeContextImpl extends AbstractInvokeAction.InvokeContextImpl {
         private Object log;
 
-        public InvokeContextImpl(Object rawInput, String invokeName, Class<?> expectedClass) {
-            setExpectedClass(expectedClass);
+        public InvokeContextImpl(Object rawInput, String invokeName) {
             setInvokeName(invokeName);
             setRawInput(rawInput);
         }

@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import kunlun.action.support.jdbc.JdbcInvokeConfig;
+import kunlun.action.invoke.jdbc.JdbcInvokeConfig;
 import kunlun.data.Dict;
 import kunlun.data.validation.support.ValidationConfig;
 import kunlun.exception.util.VerifyUtils;
@@ -37,29 +37,29 @@ public class InvokeJdbcServiceImpl extends ServiceImpl<InvokeJdbcMapper, InvokeJ
     @Resource
     private InvokeConfigService invokeConfigService;
 
-    protected JdbcInvokeConfig build(InvokeJdbc invokeHttp, Dict configs) {
+    protected JdbcInvokeConfig build(InvokeJdbc invokeJdbc, Dict configs) {
         // 构建对象
         JdbcInvokeConfig invokeConfig = new JdbcInvokeConfig();
-        invokeConfig.setScriptEngine(invokeHttp.getScriptEngine());
-        invokeConfig.setRendererName(invokeHttp.getRendererName());
-        invokeConfig.setInput(invokeHttp.getInput());
-        invokeConfig.setExecuteType(invokeHttp.getExecuteType());
-        invokeConfig.setSql(invokeHttp.getSql());
-        invokeConfig.setOutput(invokeHttp.getOutput());
+        invokeConfig.setScriptEngine(invokeJdbc.getScriptEngine());
+        invokeConfig.setRendererName(invokeJdbc.getRendererName());
+        invokeConfig.setInput(invokeJdbc.getInput());
+        invokeConfig.setExecuteType(invokeJdbc.getExecuteType());
+        invokeConfig.setSql(invokeJdbc.getSql());
+        invokeConfig.setOutput(invokeJdbc.getOutput());
         // Input validations.
-        String inputValidationStr = invokeHttp.getInputValidations();
+        String inputValidationStr = invokeJdbc.getInputValidations();
         if (StrUtil.isNotBlank(inputValidationStr)) {
             List<ValidationConfig> list = JSON.parseArray(inputValidationStr, ValidationConfig.class);
             invokeConfig.setInputValidations(list);
         }
         // Output validations.
-        String outputValidationStr = invokeHttp.getOutputValidations();
+        String outputValidationStr = invokeJdbc.getOutputValidations();
         if (StrUtil.isNotBlank(outputValidationStr)) {
             List<ValidationConfig> list = JSON.parseArray(outputValidationStr, ValidationConfig.class);
             invokeConfig.setOutputValidations(list);
         }
         // Cache config.
-        String cacheConfigStr = invokeHttp.getCacheConfig();
+        String cacheConfigStr = invokeJdbc.getCacheConfig();
         if (StrUtil.isNotBlank(cacheConfigStr)) {
             Map<String, String> map = JSON.parseObject(cacheConfigStr
                     , TypeUtils.parameterizedOf(Map.class, String.class, String.class));

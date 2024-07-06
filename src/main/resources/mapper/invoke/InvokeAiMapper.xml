@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="sagiri.invoke.mapper.InvokeAiMapper" >
+
+    <!-- **** (Start) This will be overridden, please do not modify. **** -->
+    <resultMap id="BaseResultMap" type="sagiri.invoke.pojo.entity.InvokeAi" >
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="description" property="description" />
+        <result column="script_engine" property="scriptEngine" />
+        <result column="renderer_name" property="rendererName" />
+        <result column="input_validations" property="inputValidations" />
+        <result column="input_conversion_script" property="inputConversionScript" />
+        <result column="system_prompt" property="systemPrompt" />
+        <result column="user_prompt" property="userPrompt" />
+        <result column="tool_prompt" property="toolPrompt" />
+        <result column="handler_name" property="handlerName" />
+        <result column="method_name" property="methodName" />
+        <result column="output_conversion_script" property="outputConversionScript" />
+        <result column="output_validations" property="outputValidations" />
+        <result column="cache_config" property="cacheConfig" />
+        <result column="config_id" property="configId" />
+        <result column="platform" property="platform" />
+        <result column="tenant_id" property="tenantId" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="modify_user" property="modifyUser" />
+        <result column="modify_time" property="modifyTime" />
+        <result column="delete_status" property="deleteStatus" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        `id`,
+        `name`,
+        `description`,
+        `script_engine`,
+        `renderer_name`,
+        `input_validations`,
+        `input_conversion_script`,
+        `system_prompt`,
+        `user_prompt`,
+        `tool_prompt`,
+        `handler_name`,
+        `method_name`,
+        `output_conversion_script`,
+        `output_validations`,
+        `cache_config`,
+        `config_id`,
+        `platform`,
+        `tenant_id`,
+        `create_user`,
+        `create_time`,
+        `modify_user`,
+        `modify_time`,
+        `delete_status`
+    </sql>
+
+    <sql id="Base_Selective_Where" >
+        <if test="id != null and id != ''">and `id` = #{id}</if>
+        <if test="name != null and name != ''">and `name` = #{name}</if>
+        <if test="description != null and description != ''">and `description` = #{description}</if>
+        <if test="scriptEngine != null and scriptEngine != ''">and `script_engine` = #{scriptEngine}</if>
+        <if test="rendererName != null and rendererName != ''">and `renderer_name` = #{rendererName}</if>
+        <if test="inputValidations != null and inputValidations != ''">and `input_validations` = #{inputValidations}</if>
+        <if test="inputConversionScript != null and inputConversionScript != ''">and `input_conversion_script` = #{inputConversionScript}</if>
+        <if test="systemPrompt != null and systemPrompt != ''">and `system_prompt` = #{systemPrompt}</if>
+        <if test="userPrompt != null and userPrompt != ''">and `user_prompt` = #{userPrompt}</if>
+        <if test="toolPrompt != null and toolPrompt != ''">and `tool_prompt` = #{toolPrompt}</if>
+        <if test="handlerName != null and handlerName != ''">and `handler_name` = #{handlerName}</if>
+        <if test="methodName != null and methodName != ''">and `method_name` = #{methodName}</if>
+        <if test="outputConversionScript != null and outputConversionScript != ''">and `output_conversion_script` = #{outputConversionScript}</if>
+        <if test="outputValidations != null and outputValidations != ''">and `output_validations` = #{outputValidations}</if>
+        <if test="cacheConfig != null and cacheConfig != ''">and `cache_config` = #{cacheConfig}</if>
+        <if test="configId != null and configId != ''">and `config_id` = #{configId}</if>
+        <if test="platform != null and platform != ''">and `platform` = #{platform}</if>
+        <if test="tenantId != null and tenantId != ''">and `tenant_id` = #{tenantId}</if>
+        <if test="createUser != null and createUser != ''">and `create_user` = #{createUser}</if>
+        <if test="createTime != null">and `create_time` = #{createTime}</if>
+        <if test="modifyUser != null and modifyUser != ''">and `modify_user` = #{modifyUser}</if>
+        <if test="modifyTime != null">and `modify_time` = #{modifyTime}</if>
+        <if test="deleteStatus != null">and `delete_status` = #{deleteStatus}</if>
+    </sql>
+    <!-- **** (End) This will be overridden, please do not modify. **** -->
+
+</mapper>

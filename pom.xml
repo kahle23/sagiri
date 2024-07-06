@@ -21,6 +21,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <beetl.version>1.2.38.RELEASE</beetl.version>
     </properties>
 
     <dependencies>
@@ -42,6 +43,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
         <dependency>
@@ -77,7 +83,7 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.5.8</version>
+            <version>5.8.21</version>
         </dependency>
 
         <dependency>
@@ -99,16 +105,23 @@
         </dependency>
 
         <dependency>
+            <groupId>com.ibeetl</groupId>
+            <artifactId>beetl-framework-starter</artifactId>
+            <version>${beetl.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.github.kahle23</groupId>
             <artifactId>kunlun-plus</artifactId>
-            <version>1.0.0.20240427.beta</version>
+            <version>1.0.0.20240503.beta13</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.kahle23</groupId>
             <artifactId>baibao</artifactId>
-            <version>1.0.0.20240401.beta</version>
+            <version>1.0.0.20240503.beta13</version>
         </dependency>
+
     </dependencies>
 
     <build>

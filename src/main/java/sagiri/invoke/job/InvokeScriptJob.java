@@ -39,7 +39,7 @@ public class InvokeScriptJob extends AbstractXxlJobHandler {
                 data.set(IN_XXL_JOB_NAME, true);
             }
             // 脚本调用
-            Object execute = ActionUtils.execute(actionName, data, invokeName, Object.class);
+            Object execute = ActionUtils.execute(actionName+"."+invokeName, data);
             log.info("脚本执行结果为：{}", JSON.toJSONString(execute));
             return ReturnT.SUCCESS;
         }

@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import kunlun.action.support.http.HttpInvokeConfig;
+import kunlun.action.invoke.http.HttpInvokeConfig;
 import kunlun.data.Dict;
 import kunlun.data.validation.support.ValidationConfig;
 import kunlun.exception.util.VerifyUtils;

@@ -1,21 +1,22 @@
 package sagiri.invoke.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import kunlun.action.invoke.jdbc.JdbcInvokeConfig;
-import sagiri.invoke.pojo.entity.InvokeJdbc;
+import kunlun.action.invoke.ai.AiInvokeConfig;
+import sagiri.invoke.pojo.entity.InvokeAi;
 
 /**
- * Jdbc调用配置表 服务类
+ * AI调用配置表的服务类.
+ *
  * @author Sagiri
- * @since 2024-06-02
+ * @since 2024-07-10
  */
-public interface InvokeJdbcService extends IService<InvokeJdbc> {
+public interface InvokeAiService extends IService<InvokeAi> {
 
     /**
      * 根据调用名称查询对应的调用配置.
      * @param name 待查询的调用名称
      * @return 查询到的 Jdbc 调用配置 或者 Null
      */
-    JdbcInvokeConfig findByName(String name);
+    AiInvokeConfig findByName(String name);
 
 }

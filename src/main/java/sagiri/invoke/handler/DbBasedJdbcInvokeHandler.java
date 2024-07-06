@@ -1,12 +1,12 @@
 package sagiri.invoke.handler;
 
-import kunlun.action.support.AutoActionHandler;
-import kunlun.action.support.jdbc.JdbcInvokeConfig;
-import kunlun.action.support.jdbc.spring.AbstractScriptBasedJdbcTemplateInvokeHandler;
+import kunlun.action.invoke.jdbc.JdbcInvokeConfig;
+import kunlun.action.invoke.jdbc.support.spring.AbstractScriptBasedJdbcTemplateInvokeAction;
+import kunlun.action.support.AutoAction;
 import kunlun.data.json.JsonUtils;
-import kunlun.exception.BusinessException;
 import kunlun.exception.ExceptionUtils;
 import kunlun.exception.util.VerifyUtils;
+import kunlun.util.handler.ScriptHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -27,8 +27,8 @@ import static kunlun.data.json.JsonFormat.PRETTY_FORMAT;
  */
 @Slf4j
 @Component
-public class DbBasedJdbcInvokeHandler extends AbstractScriptBasedJdbcTemplateInvokeHandler
-        implements AutoActionHandler {
+public class DbBasedJdbcInvokeHandler extends AbstractScriptBasedJdbcTemplateInvokeAction
+        implements AutoAction {
 
     @Resource
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -36,11 +36,19 @@ public class DbBasedJdbcInvokeHandler extends AbstractScriptBasedJdbcTemplateInv
     private InvokeJdbcService invokeJdbcService;
     @Resource
     private InvokeLogService invokeLogService;
+    @Resource
+    private ScriptHandler scriptHandler;
 
     @Override
     public String getName() {
 
         return "invoke-jdbc-db";
+    }
+
+    @Override
+    protected ScriptHandler getScriptHandler() {
+
+        return scriptHandler;
     }
 
     @Override
@@ -58,20 +66,12 @@ public class DbBasedJdbcInvokeHandler extends AbstractScriptBasedJdbcTemplateInv
     }
 
     @Override
-    protected void throwException(boolean validate, String message) {
-        if (!validate) {
-            throw new BusinessException(message);
-        }
-    }
-
-    @Override
     protected void recordLog(InvokeContext context) {
         InvokeLogAddForm form = new InvokeLogAddForm();
         try {
             form.setType(TWO);
             form.setInvokeName(context.getInvokeName());
             form.setTime(new Date());
-            form.setExpectedClass(context.getExpectedClass().getName());
             form.setRawInput(JsonUtils.toJsonString(context.getRawInput(), PRETTY_FORMAT));
             form.setConfig(JsonUtils.toJsonString(context.getConfig(), PRETTY_FORMAT));
             form.setConvertedInput(JsonUtils.toJsonString(context.getConvertedInput(), PRETTY_FORMAT));

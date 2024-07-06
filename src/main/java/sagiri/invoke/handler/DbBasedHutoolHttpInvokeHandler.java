@@ -1,15 +1,15 @@
 package sagiri.invoke.handler;
 
 import cn.hutool.core.util.StrUtil;
-import kunlun.action.support.AutoActionHandler;
-import kunlun.action.support.http.HttpInvokeConfig;
-import kunlun.action.support.http.hutool.AbstractScriptBasedHutoolHttpInvokeHandler;
+import kunlun.action.invoke.http.HttpInvokeConfig;
+import kunlun.action.invoke.http.support.hutool.AbstractScriptBasedHutoolHttpInvokeAction;
+import kunlun.action.support.AutoAction;
 import kunlun.cache.CacheUtils;
 import kunlun.data.Dict;
 import kunlun.data.json.JsonUtils;
-import kunlun.exception.BusinessException;
 import kunlun.exception.ExceptionUtils;
 import kunlun.exception.util.VerifyUtils;
+import kunlun.util.handler.ScriptHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import sagiri.invoke.pojo.form.InvokeLogAddForm;
@@ -29,18 +29,26 @@ import static kunlun.data.json.JsonFormat.PRETTY_FORMAT;
  */
 @Slf4j
 @Component
-public class DbBasedHutoolHttpInvokeHandler extends AbstractScriptBasedHutoolHttpInvokeHandler
-        implements AutoActionHandler {
+public class DbBasedHutoolHttpInvokeHandler extends AbstractScriptBasedHutoolHttpInvokeAction
+        implements AutoAction {
 
     @Resource
     private InvokeHttpService invokeHttpService;
     @Resource
     private InvokeLogService invokeLogService;
+    @Resource
+    private ScriptHandler scriptHandler;
 
     @Override
     public String getName() {
 
         return "invoke-http-db";
+    }
+
+    @Override
+    protected ScriptHandler getScriptHandler() {
+
+        return scriptHandler;
     }
 
     @Override
@@ -52,13 +60,6 @@ public class DbBasedHutoolHttpInvokeHandler extends AbstractScriptBasedHutoolHtt
     }
 
     @Override
-    protected void throwException(boolean validate, String message) {
-        if (!validate) {
-            throw new BusinessException(message);
-        }
-    }
-
-    @Override
     protected void doInvoke(InvokeContext context) {
         HttpInvokeConfig config = (HttpInvokeConfig) context.getConfig();
         // 获取缓存配置
@@ -66,8 +67,8 @@ public class DbBasedHutoolHttpInvokeHandler extends AbstractScriptBasedHutoolHtt
         String cacheName = cacheConfig.getString("cacheName");
         String cacheKey = cacheConfig.getString("cacheKey");
         // 处理缓存Key
-        cacheKey = StrUtil.isNotBlank(cacheKey)
-                ? (String) eval(config.getScriptEngine(), cacheKey, context) : null;
+        cacheKey = StrUtil.isNotBlank(cacheKey) ? (String)
+                getScriptHandler().eval(config.getScriptEngine(), cacheKey, context) : null;
         // 缓存名称 和 缓存Key 不为空，尝试走缓存
         if (StrUtil.isNotBlank(cacheName) && StrUtil.isNotBlank(cacheKey)) {
             Object rawOutput = CacheUtils.get(cacheName, cacheKey, () -> {
@@ -87,7 +88,6 @@ public class DbBasedHutoolHttpInvokeHandler extends AbstractScriptBasedHutoolHtt
             form.setType(ONE);
             form.setInvokeName(context.getInvokeName());
             form.setTime(new Date());
-            form.setExpectedClass(context.getExpectedClass().getName());
             form.setRawInput(JsonUtils.toJsonString(context.getRawInput(), PRETTY_FORMAT));
             form.setConfig(JsonUtils.toJsonString(context.getConfig(), PRETTY_FORMAT));
             form.setConvertedInput(JsonUtils.toJsonString(context.getConvertedInput(), PRETTY_FORMAT));
