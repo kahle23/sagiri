@@ -23,6 +23,8 @@ spring:
   jackson:
     serialization:
       write-dates-as-timestamps: true
+beetl:
+  suffix: html
 
 
 # Mybatis-Plus 相关配置

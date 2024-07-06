@@ -7,9 +7,9 @@ import kunlun.action.support.http.hutool.AbstractScriptBasedHutoolHttpInvokeHand
 import kunlun.cache.CacheUtils;
 import kunlun.data.Dict;
 import kunlun.data.json.JsonUtils;
-import kunlun.exception.BusinessException;
 import kunlun.exception.ExceptionUtils;
 import kunlun.exception.util.VerifyUtils;
+import kunlun.util.handler.ScriptHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import sagiri.invoke.pojo.form.InvokeLogAddForm;
@@ -36,11 +36,19 @@ public class DbBasedHutoolHttpInvokeHandler extends AbstractScriptBasedHutoolHtt
     private InvokeHttpService invokeHttpService;
     @Resource
     private InvokeLogService invokeLogService;
+    @Resource
+    private ScriptHandler scriptHandler;
 
     @Override
     public String getName() {
 
         return "invoke-http-db";
+    }
+
+    @Override
+    protected ScriptHandler getScriptHandler() {
+
+        return scriptHandler;
     }
 
     @Override
@@ -52,13 +60,6 @@ public class DbBasedHutoolHttpInvokeHandler extends AbstractScriptBasedHutoolHtt
     }
 
     @Override
-    protected void throwException(boolean validate, String message) {
-        if (!validate) {
-            throw new BusinessException(message);
-        }
-    }
-
-    @Override
     protected void doInvoke(InvokeContext context) {
         HttpInvokeConfig config = (HttpInvokeConfig) context.getConfig();
         // 获取缓存配置
@@ -66,8 +67,8 @@ public class DbBasedHutoolHttpInvokeHandler extends AbstractScriptBasedHutoolHtt
         String cacheName = cacheConfig.getString("cacheName");
         String cacheKey = cacheConfig.getString("cacheKey");
         // 处理缓存Key
-        cacheKey = StrUtil.isNotBlank(cacheKey)
-                ? (String) eval(config.getScriptEngine(), cacheKey, context) : null;
+        cacheKey = StrUtil.isNotBlank(cacheKey) ? (String)
+                getScriptHandler().eval(config.getScriptEngine(), cacheKey, context) : null;
         // 缓存名称 和 缓存Key 不为空，尝试走缓存
         if (StrUtil.isNotBlank(cacheName) && StrUtil.isNotBlank(cacheKey)) {
             Object rawOutput = CacheUtils.get(cacheName, cacheKey, () -> {
