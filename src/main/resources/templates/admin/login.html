@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="/css/font.css">
     <link rel="stylesheet" href="/css/login.css">
 	  <link rel="stylesheet" href="/css/index.css">
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="/lib/layui/layui.js" charset="utf-8"></script>
 
 </head>
@@ -37,32 +38,24 @@
             var form = layui.form;
             //监听提交
             form.on('submit(login)', function(data) {
-                // 调用登录接口
-                $.ajax({
-                    url:"/api/admin/login", // 目标URL
-                    type:"post", // 请求类型，可以是GET、POST等
-                    contentType: 'application/json', // 发送信息至服务器时内容编码类型
-                    data: JSON.stringify(data.field), // 将对象转换为JSON字符串作为发送数据
-                    dataType:"json", // 预期服务器返回的数据类型
-                    success: function(data) {
-                        // 请求成功时的回调函数
+                $loginBtn.prop('disabled', true).text('登录中...');
+                postJson(
+                    "/api/admin/login",
+                    data.field,
+                    function(data) {
                         if (data.success) {
                             layer.msg("登录成功！", {icon:6, time:2000}, function() {
-                                // 先将页签记忆清空，以免上次登陆的用户的菜单对于此次登录的用户无权限而跳转到403页面
-                                // index.clearTabCache();
-                                location.href = '/admin/index'
+                                location.href = '/admin/index';
                             });
                         } else {
                             layer.msg(data.message, {icon:5, time:2000});
                         }
                     },
-                    error: function(xhr, status, error) {
-                        // 请求失败时的回调函数
+                    function(xhr, status, error) {
                         layer.msg("网络错误！", {icon:5, time:2000});
                         console.log(xhr.responseText);
                     }
-                });
-                // 阻止表单跳转
+                );
                 return false;
             });
         });

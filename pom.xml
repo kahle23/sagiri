@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.kahle23</groupId>
     <artifactId>sagiri</artifactId>
-    <version>1.0.0.20240406.beta</version>
+    <version>1.0.0.25714b</version>
     <packaging>jar</packaging>
     <name>sagiri</name>
     <url>https://github.com/kahle23/sagiri</url>
@@ -112,14 +112,8 @@
 
         <dependency>
             <groupId>io.github.kahle23</groupId>
-            <artifactId>kunlun-plus</artifactId>
-            <version>1.0.0.20240503.beta</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.kahle23</groupId>
             <artifactId>baibao</artifactId>
-            <version>1.0.0.20240503.beta</version>
+            <version>1.0.0.257071</version>
         </dependency>
 
     </dependencies>

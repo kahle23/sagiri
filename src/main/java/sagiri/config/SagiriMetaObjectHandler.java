@@ -1,6 +1,6 @@
 package sagiri.config;
 
-import kunlun.db.jdbc.support.mybatisplus.AbstractMetaObjectHandler;
+import kunlun.db.jdbc.mybatisplus.AbstractMetaObjectHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
