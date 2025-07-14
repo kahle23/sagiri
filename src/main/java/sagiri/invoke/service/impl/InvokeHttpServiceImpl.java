@@ -9,7 +9,7 @@ import kunlun.action.invoke.http.HttpInvokeConfig;
 import kunlun.data.Dict;
 import kunlun.data.validation.support.ValidationConfig;
 import kunlun.exception.util.VerifyUtils;
-import kunlun.util.TypeUtils;
+import kunlun.util.TypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import sagiri.invoke.mapper.InvokeHttpMapper;
@@ -66,7 +66,7 @@ public class InvokeHttpServiceImpl extends ServiceImpl<InvokeHttpMapper, InvokeH
         String cacheConfigStr = invokeHttp.getCacheConfig();
         if (StrUtil.isNotBlank(cacheConfigStr)) {
             Map<String, String> map = JSON.parseObject(cacheConfigStr
-                    , TypeUtils.parameterizedOf(Map.class, String.class, String.class));
+                    , TypeUtil.parameterizedOf(Map.class, String.class, String.class));
             invokeConfig.setCacheConfig(map);
         }
         // Other configs.

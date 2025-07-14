@@ -6,11 +6,11 @@ import kunlun.action.invoke.AbstractInvokeAction;
 import kunlun.action.invoke.script.AbstractScriptBasedScriptInvokeAction;
 import kunlun.action.invoke.script.ScriptInvokeConfig;
 import kunlun.action.support.AutoAction;
-import kunlun.cache.CacheUtils;
+import kunlun.cache.CacheUtil;
 import kunlun.data.Dict;
 import kunlun.data.bean.BeanUtils;
-import kunlun.data.json.JsonUtils;
-import kunlun.exception.ExceptionUtils;
+import kunlun.data.json.JsonUtil;
+import kunlun.exception.ExceptionUtil;
 import kunlun.exception.util.VerifyUtils;
 import kunlun.util.Assert;
 import kunlun.util.handler.ScriptHandler;
@@ -98,7 +98,7 @@ public class DbBasedScriptInvokeHandler extends AbstractScriptBasedScriptInvokeA
                 getScriptHandler().eval(config.getEngine(), cacheKey, context) : null;
         // 缓存名称 和 缓存Key 不为空，尝试走缓存
         if (StrUtil.isNotBlank(cacheName) && StrUtil.isNotBlank(cacheKey)) {
-            Object rawOutput = CacheUtils.get(cacheName, cacheKey, () -> {
+            Object rawOutput = CacheUtil.get(cacheName, cacheKey, () -> {
                 DbBasedScriptInvokeHandler.super.doInvoke(context);
                 return context.getRawOutput();
             });
@@ -115,18 +115,18 @@ public class DbBasedScriptInvokeHandler extends AbstractScriptBasedScriptInvokeA
             form.setType(THREE);
             form.setInvokeName(context.getInvokeName());
             form.setTime(new Date());
-            form.setRawInput(JsonUtils.toJsonString(context.getRawInput(), PRETTY_FORMAT));
-            form.setConfig(JsonUtils.toJsonString(context.getConfig(), PRETTY_FORMAT));
-            form.setRawOutput(JsonUtils.toJsonString(context.getRawOutput(), PRETTY_FORMAT));
+            form.setRawInput(JsonUtil.toJsonString(context.getRawInput(), PRETTY_FORMAT));
+            form.setConfig(JsonUtil.toJsonString(context.getConfig(), PRETTY_FORMAT));
+            form.setRawOutput(JsonUtil.toJsonString(context.getRawOutput(), PRETTY_FORMAT));
             Throwable error = context.getError();
             if (error != null) {
-                form.setError(ExceptionUtils.toString(error));
+                form.setError(ExceptionUtil.toString(error));
             }
             invokeLogService.add(form);
         }
         catch (Exception e) {
             log.error("保存调用日志失败！", e);
-            log.warn("待保存的调用日志信息为：\n{}", JsonUtils.toJsonString(form));
+            log.warn("待保存的调用日志信息为：\n{}", JsonUtil.toJsonString(form));
         }
     }
 

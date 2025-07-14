@@ -9,7 +9,7 @@ import kunlun.action.invoke.script.ScriptInvokeConfig;
 import kunlun.data.Dict;
 import kunlun.data.validation.support.ValidationConfig;
 import kunlun.exception.util.VerifyUtils;
-import kunlun.util.TypeUtils;
+import kunlun.util.TypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import sagiri.invoke.mapper.InvokeScriptMapper;
@@ -60,7 +60,7 @@ public class InvokeScriptServiceImpl extends ServiceImpl<InvokeScriptMapper, Inv
         String cacheConfigStr = invokeScript.getCacheConfig();
         if (StrUtil.isNotBlank(cacheConfigStr)) {
             Map<String, String> map = JSON.parseObject(cacheConfigStr
-                    , TypeUtils.parameterizedOf(Map.class, String.class, String.class));
+                    , TypeUtil.parameterizedOf(Map.class, String.class, String.class));
             invokeConfig.setCacheConfig(map);
         }
         // Other configs.

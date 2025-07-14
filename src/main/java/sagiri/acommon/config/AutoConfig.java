@@ -1,6 +1,6 @@
-package sagiri.config;
+package sagiri.acommon.config;
 
-import kunlun.renderer.RenderUtils;
+import kunlun.renderer.RenderUtil;
 import kunlun.renderer.support.VelocityTextRenderer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,7 +19,7 @@ public class AutoConfig implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
 
-        RenderUtils.registerRenderer("velocity", new VelocityTextRenderer());
+        RenderUtil.registerRenderer("velocity", new VelocityTextRenderer());
     }
 
 }

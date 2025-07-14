@@ -18,6 +18,47 @@ CREATE TABLE `t_invoke_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='调用相关配置表';
 
 
+
+
+
+CREATE TABLE `base_invoke_proc` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `name` varchar(100) NOT NULL COMMENT '调用名称',
+  `description` varchar(500) DEFAULT '' COMMENT '功能描述',
+  `script_engine` varchar(50) DEFAULT '' COMMENT '脚本引擎名称',
+  `renderer_name` varchar(50) DEFAULT '' COMMENT '模板引擎名称',
+  `input_validations` text COMMENT '入参校验规则（JSON字符串）',
+  `input` text COMMENT '入参转换脚本',
+  `charset` varchar(20) NOT NULL DEFAULT 'utf-8' COMMENT '字符编码',
+  `work_dir` varchar(300) NOT NULL DEFAULT '' COMMENT '工作目录',
+  `main_command` varchar(200) NOT NULL COMMENT '主命令',
+  `other_command_or_script` text COMMENT '其他命令或脚本',
+  `script_need_file` tinyint(4) NOT NULL DEFAULT '0' COMMENT '脚本需要创建文件：0 不需要，1 需要',
+  `script_file_suffix` varchar(30) NOT NULL DEFAULT '' COMMENT '脚本文件的后缀名',
+  `destroy_process` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否需要销毁进程：0 不需要，1 需要',
+  `output` text COMMENT '出参转换脚本',
+  `output_validations` text COMMENT '出参校验规则（JSON字符串）',
+  `config_id` bigint(20) DEFAULT NULL COMMENT '配置ID（otherConfigs中填充的内容）',
+  `platform` varchar(50) NOT NULL DEFAULT '' COMMENT '平台信息',
+  `tenant_id` varchar(50) NOT NULL DEFAULT '' COMMENT '租户ID',
+  `owner_id` bigint(20) NOT NULL COMMENT '数据的所属人ID',
+  `own_org_id` bigint(20) NOT NULL COMMENT '数据的所属机构ID',
+  `create_user` bigint(20) NOT NULL COMMENT '创建者',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `modify_user` bigint(20) NOT NULL COMMENT '修改者',
+  `modify_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  `delete_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '删除状态：0 未删除，1 已删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_name` (`name`) USING BTREE,
+  KEY `idx_config_id` (`config_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='进程调用配置表';
+
+
+
+
+
+
+
 -- Http 调用配置表
 CREATE TABLE `t_invoke_http` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
